@@ -43,7 +43,7 @@ public class TipoCambioController {
         @ApiResponse(code = 404, message = "Not Found"),
         @ApiResponse(code = 500, message = "Error en el Servidor", response = ExceptionResponse.class)
     })
-    @GetMapping(path = "/", produces = "application/json")
+    @GetMapping(path = "/lista", produces = "application/json")
     public ResponseEntity<Response> tipoCambios() {
         return ResponseEntity.ok(cambioService.tipoCambio());
     }
@@ -54,7 +54,7 @@ public class TipoCambioController {
         @ApiResponse(code = 404, message = "Not Found"),
         @ApiResponse(code = 500, message = "Error en el Servidor", response = ExceptionResponse.class)
     })
-    @GetMapping(path = "/{moneda}", produces = "application/json", consumes = "application/json")
+    @GetMapping(path = "/{moneda}", produces = "application/json")
     public ResponseEntity<Response> obtenerMoneda(@PathVariable String moneda) {
         return ResponseEntity.ok(cambioService.tipoCambioMoneda(moneda));
     }

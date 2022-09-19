@@ -1,6 +1,5 @@
 package com.test.change.service.impl;
 
-import com.test.change.entity.TipoCambio;
 import com.test.change.entity.Transaccion;
 import com.test.change.repository.PersonaRepository;
 import com.test.change.repository.TipoCambioRepository;
@@ -51,22 +50,19 @@ public class TransaccionServiceImpl implements TransaccionService {
             result.setMonedaOrigen(request.getMonedaOrigen());
             result.setMontoOrigen(request.getMontoOrigen());
             result.setMonedaDestino(request.getMonedaDestino());
-            if(!tpo.isPresent()){
-                tipoCambioOrigen=0.0;
-            }else{
+           if(tpo.isPresent()){
                 tipoCambioOrigen = tpo.get().getCompra();
                 result.setMontoDestino(request.getMontoOrigen()*tipoCambioOrigen);
                 result.setTipoCambio(tpo.get());
             }
             
-            if(!tpd.isPresent()){
-                tipoCambioDestino = 0.0;
-            }else{
+            if(tpd.isPresent()){
                 tipoCambioDestino = tpd.get().getVenta();
                 result.setMontoDestino(request.getMontoOrigen()/tipoCambioDestino);
                 result.setTipoCambio(tpd.get());
             }
-            result = transaccionRepository.save(result);
+            result.setPersonaCreacion(persona.get());
+            result = transaccionRepository.save(result); 
             return new Response(result, "OK", HttpStatus.OK);
         }catch(Exception ex){
             LOG.error("Error en cambioGenerar ", ex);
@@ -92,17 +88,13 @@ public class TransaccionServiceImpl implements TransaccionService {
             response.setMonedaOrigen(request.getMonedaOrigen());
             response.setMontoOrigen(request.getMontoOrigen());
             response.setMonedaDestino(request.getMonedaDestino());
-            if(!tpo.isPresent()){
-                tipoCambioOrigen=0.0;
-            }else{
+            if(tpo.isPresent()){
                 tipoCambioOrigen = tpo.get().getCompra();
                 response.setMontoDestino(request.getMontoOrigen()*tipoCambioOrigen);
                 response.setTipoCambio(tipoCambioOrigen);
             }
             
-            if(!tpd.isPresent()){
-                tipoCambioDestino = 0.0;
-            }else{
+            if(tpd.isPresent()){
                 tipoCambioDestino = tpd.get().getVenta();
                 response.setMontoDestino(request.getMontoOrigen()/tipoCambioDestino);
                 response.setTipoCambio(tipoCambioDestino);
@@ -118,10 +110,39 @@ public class TransaccionServiceImpl implements TransaccionService {
     @Override
     public Response Actualizar(Long id, TransaccionRequest request,UserDetails userDeatails) {
         try{
-            var result = tipoCambioRepository.findAll();
-            if(!result.iterator().hasNext()){
-                return new Response(null, "Sin Registros", HttpStatus.NO_CONTENT);
+            Double tipoCambioOrigen;
+            Double tipoCambioDestino;
+            if(request.getMonedaOrigen().isEmpty() && request.getMontoOrigen() == 0 && request.getMonedaDestino().isEmpty()){
+                return new Response(null, "Error en los campos", HttpStatus.BAD_REQUEST);
             }
+            
+            var persona = personaRepository.findByEmail(userDeatails.getUsername());
+            if(!persona.isPresent()){
+                return new Response(null,"No autorizado", HttpStatus.UNAUTHORIZED);
+            }
+            
+            var tpo = tipoCambioRepository.findByMoneda(request.getMonedaOrigen());
+            var tpd = tipoCambioRepository.findByMoneda(request.getMonedaDestino());
+            if(transaccionRepository.existsById(id)){
+                return new Response(null, "No existe Tipo de Cambio", HttpStatus.NO_CONTENT);
+            }
+            var result = transaccionRepository.findById(id).get();
+            result.setMonedaOrigen(request.getMonedaOrigen());
+            result.setMontoOrigen(request.getMontoOrigen());
+            result.setMonedaDestino(request.getMonedaDestino());
+           if(tpo.isPresent()){
+                tipoCambioOrigen = tpo.get().getCompra();
+                result.setMontoDestino(request.getMontoOrigen()*tipoCambioOrigen);
+                result.setTipoCambio(tpo.get());
+            }
+            
+            if(tpd.isPresent()){
+                tipoCambioDestino = tpd.get().getVenta();
+                result.setMontoDestino(request.getMontoOrigen()/tipoCambioDestino);
+                result.setTipoCambio(tpd.get());
+            }
+            result.setPersonaActualizacion(persona.get());
+            result = transaccionRepository.save(result);
             return new Response(result, "OK", HttpStatus.OK);
         }catch(Exception ex){
             LOG.error("Error en Actualizar ", ex);
