@@ -32,10 +32,10 @@ public class TipoCambio {
     @Column(updatable = false, unique = true)
     private Long id;
     
-    @Column(name = "compra", columnDefinition = "decimal(8,2) DEFAULT '0.00'")
+    @Column(name = "compra", columnDefinition = "decimal(8,4) DEFAULT '0.0000'")
     private double compra;
     
-    @Column(name = "venta", columnDefinition = "decimal(8,2) DEFAULT '0.00'")
+    @Column(name = "venta", columnDefinition = "decimal(8,4) DEFAULT '0.0000'")
     private double venta;
     
     @Column(name = "origen", updatable = false, columnDefinition = "varchar(50)")

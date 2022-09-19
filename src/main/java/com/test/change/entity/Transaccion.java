@@ -36,13 +36,13 @@ public class Transaccion implements Serializable {
     @Column(name = "moneda_origen")
     private String monedaOrigen;
     
-    @Column(name = "monto_origen")
+    @Column(name = "monto_origen",columnDefinition = "decimal(8,4) DEFAULT '0.0000'")
     private double montoOrigen;
     
     @Column(name = "moneda_destino")
     private String monedaDestino;
     
-    @Column(name = "monto_destino")
+    @Column(name = "monto_destino",columnDefinition = "decimal(8,4) DEFAULT '0.0000'")
     private double montoDestino;
 
     @ManyToOne(fetch = FetchType.EAGER)
