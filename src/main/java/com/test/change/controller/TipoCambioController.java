@@ -13,7 +13,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -106,7 +105,7 @@ public class TipoCambioController {
         return ResponseEntity.ok(transaccionService.cambioGenerar(request,userDeatails));
     }
     
-    @ApiOperation(value = "Crear Tipo Cambio", tags = {"Controlador Servicio TipoCambio"})
+    @ApiOperation(value = "Actualiza Tipo Cambio", tags = {"Controlador Servicio TipoCambio"})
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Response.class),
         @ApiResponse(code = 404, message = "Not Found"),

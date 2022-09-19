@@ -53,6 +53,10 @@ public class TipoCambioServiceImpl implements TipoCambioService {
                 return new Response(null,"No autorizado", HttpStatus.UNAUTHORIZED);
             }
             
+            if(tipoCambioRepository.findByMoneda(request.getMoneda()).isPresent()){
+                return new Response(null,"Tipo de Cambio Existe", HttpStatus.BAD_REQUEST);
+            }
+            
             TipoCambio tp = new TipoCambio();
             tp.setCompra(request.getCompra());
             tp.setVenta(request.getVenta());
