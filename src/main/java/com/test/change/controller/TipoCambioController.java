@@ -93,6 +93,17 @@ public class TipoCambioController {
         return ResponseEntity.ok(transaccionService.cambio(request));
     }
     
+    @ApiOperation(value = "Generar todo los Tipo de Cambio", tags = {"Controlador Servicio TipoCambio"})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK", response = Response.class),
+        @ApiResponse(code = 404, message = "Not Found"),
+        @ApiResponse(code = 500, message = "Error en el Servidor", response = ExceptionResponse.class)
+    })
+    @PostMapping(path = "/generar-cambios", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Response> generarCambios(@RequestBody TransaccionRequest request) {
+        return ResponseEntity.ok(transaccionService.generarCambios(request));
+    }
+    
     @ApiOperation(value = "Crear Tipo Cambio", tags = {"Controlador Servicio TipoCambio"})
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Response.class),

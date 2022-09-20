@@ -1,14 +1,19 @@
 package com.test.change.service.impl;
 
+import com.test.change.entity.TipoCambio;
 import com.test.change.entity.Transaccion;
 import com.test.change.repository.PersonaRepository;
 import com.test.change.repository.TipoCambioRepository;
 import com.test.change.repository.TransaccionRepository;
 import com.test.change.request.TransaccionRequest;
+import com.test.change.response.CambiosResponse;
 import com.test.change.response.Response;
 import com.test.change.response.TipoCambioResponse;
+import com.test.change.response.TipoCambiosResponse;
 import com.test.change.service.TransaccionService;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,6 +151,34 @@ public class TransaccionServiceImpl implements TransaccionService {
             return new Response(result, "OK", HttpStatus.OK);
         }catch(Exception ex){
             LOG.error("Error en Actualizar ", ex);
+            return new Response(null, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response generarCambios(TransaccionRequest request) {
+        try{
+            
+            TipoCambiosResponse tipoResponse = new TipoCambiosResponse();
+            List<CambiosResponse> cambiosReponse = new ArrayList<>();
+            if(request.getMonedaOrigen().isEmpty() && request.getMontoOrigen() == 0 && request.getMonedaDestino().isEmpty()){
+                return new Response(null, "Error en los campos", HttpStatus.BAD_REQUEST);
+            }
+            var tiposcambios = tipoCambioRepository.findAll();
+            
+            tipoResponse.setMontoOrigen(request.getMontoOrigen());
+            tipoResponse.setMonedaOrigen(request.getMonedaOrigen());
+            for(TipoCambio tp : tiposcambios){
+                CambiosResponse cambios = new CambiosResponse();
+                cambios.setMonedaDestino(tp.getMoneda());
+                cambios.setMontoDestino(request.getMontoOrigen()/tp.getVenta());
+                cambios.setTipoCambio(tp.getVenta());
+                cambiosReponse.add(cambios);                
+            }
+            tipoResponse.setCambios(cambiosReponse);
+            return new Response(tipoResponse, "Ok", HttpStatus.OK);
+        }catch(Exception ex){
+            LOG.error("Error en generarCambios", ex);
             return new Response(null, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
