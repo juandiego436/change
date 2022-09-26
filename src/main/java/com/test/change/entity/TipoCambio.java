@@ -1,5 +1,6 @@
 package com.test.change.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,6 +48,7 @@ public class TipoCambio {
     @Column(name = "fecha_creacion", updatable = false, columnDefinition = "TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @JsonIgnore
     private Date fechaCreacion;
     
     @ManyToOne(fetch = FetchType.EAGER)

@@ -1,5 +1,6 @@
 package com.test.change.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -52,6 +53,7 @@ public class Transaccion implements Serializable {
     @Column(name = "fecha_creacion", updatable = false, columnDefinition = "TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @JsonIgnore
     private Date fechaCreacion;
     
     
