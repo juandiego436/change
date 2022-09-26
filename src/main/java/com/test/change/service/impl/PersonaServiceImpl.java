@@ -9,6 +9,7 @@ import com.test.change.response.Response;
 import com.test.change.response.ResponseLogin;
 import com.test.change.security.jwt.JwtProvider;
 import com.test.change.service.PersonaService;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -89,6 +90,9 @@ public class PersonaServiceImpl implements PersonaService {
                 return new Response(null,"Error no existe persona", HttpStatus.NO_CONTENT);
             }
             var persona = personaRepository.findByEmail(email).get();
+            if(persona.getDeletedAt() != null){
+                return new Response(null,"Error no existe persona", HttpStatus.NO_CONTENT);
+            }
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtProvider.generateToken(authentication);
@@ -97,6 +101,69 @@ public class PersonaServiceImpl implements PersonaService {
             login.setToken(token);
             login.setAuthorities(userDeatails.getAuthorities());
             return new Response(login, "OK", HttpStatus.OK);
+        }catch(Exception ex){
+            LOG.error("Error en Crear Persona ", ex);
+            return new Response(null, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response Actualizar(Long id, PersonaRequest request) {
+        try{
+            if(request.getNombre() == null && request.getEmail().isEmpty() && request.getPassword().isEmpty()){
+                return new Response(null,"Error en los campos", HttpStatus.BAD_REQUEST);
+            }
+
+            if(!personaRepository.existsById(id)){
+                 return new Response(null,"Error no existe Persona", HttpStatus.NO_CONTENT);
+            }
+            var persona = personaRepository.findById(id).get();
+            Set<Rol> roles = persona.getRoles();
+            persona.setNombre(request.getNombre());
+            persona.setEmail(request.getEmail());
+            Rol rol = new Rol();
+            rol.setRolNombre(request.getRol().getRolNombre());
+            roles.add(rol);
+            persona.setRoles(roles);
+            var result = personaRepository.save(persona);
+            if(result == null){
+                return new Response(null,"Error no se pudo Actualizar", HttpStatus.NOT_MODIFIED);
+            }
+            return new Response(result, "OK", HttpStatus.OK);
+        }catch(Exception ex){
+            LOG.error("Error en Crear Persona ", ex);
+            return new Response(null, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response eliminar(Long id) {
+        try{
+            if(!personaRepository.existsById(id)){
+                return new Response(null,"Error no existe Persona", HttpStatus.NO_CONTENT);
+            }
+            var persona = personaRepository.findById(id).get();
+            persona.setDeletedAt(new Date());
+            var result = personaRepository.save(persona);
+            if(result == null){
+                return new Response(null,"Error no se pudo Eliminar", HttpStatus.NOT_IMPLEMENTED);
+            }
+            return new Response(null, "OK", HttpStatus.OK);
+        }catch(Exception ex){
+            LOG.error("Error en Crear Persona ", ex);
+            return new Response(null, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Response lista() {
+        try{
+            var personas = personaRepository.listado();
+            if(!personas.iterator().hasNext()){
+                return new Response(null,"Error no existe personas", HttpStatus.NO_CONTENT);
+            }
+            
+            return new Response(personas, "OK", HttpStatus.OK);
         }catch(Exception ex){
             LOG.error("Error en Crear Persona ", ex);
             return new Response(null, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
