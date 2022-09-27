@@ -14,4 +14,5 @@ public interface PersonaService {
     public Response Actualizar(Long id, PersonaRequest request);
     public Response eliminar(Long id);
     public Response lista();
+    public Response obtener(Long id);
 }

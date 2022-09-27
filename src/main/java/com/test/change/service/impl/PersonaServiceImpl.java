@@ -177,4 +177,19 @@ public class PersonaServiceImpl implements PersonaService {
         }
     }
 
+    @Override
+    public Response obtener(Long id) {
+        try{
+            
+            if(!personaRepository.existsById(id)){
+                return new Response(null,"Error no existe personas", HttpStatus.NO_CONTENT);
+            }
+            var personas = personaRepository.findById(id).get();
+            return new Response(personas, "OK", HttpStatus.OK);
+        }catch(Exception ex){
+            LOG.error("Error en Crear Persona ", ex);
+            return new Response(null, ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

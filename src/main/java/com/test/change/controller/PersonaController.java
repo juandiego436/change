@@ -1,5 +1,6 @@
 package com.test.change.controller;
 
+import com.test.change.dto.PersonaPrincipal;
 import com.test.change.request.PersonaRequest;
 import com.test.change.request.RequestLogin;
 import com.test.change.response.ExceptionResponse;
@@ -11,7 +12,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,6 +58,17 @@ public class PersonaController {
     public ResponseEntity<Response> listaRoles() {
         return ResponseEntity.ok(rolService.roles());
     }
+    
+    @ApiOperation(value = "Obtener Persona", tags = {"Controlador Servicio Persona"})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK", response = Response.class),
+        @ApiResponse(code = 404, message = "Not Found"),
+        @ApiResponse(code = 500, message = "Error en el Servidor", response = ExceptionResponse.class)
+    })
+    @GetMapping(path = "/{id}", produces = "application/json")
+    public ResponseEntity<Response> obtener(@PathVariable Long id) {
+        return ResponseEntity.ok(personaService.obtener(id));
+    }
 
     @ApiOperation(value = "Crear Persona", tags = {"Controlador Servicio Persona"})
     @ApiResponses(value = {
@@ -76,6 +90,20 @@ public class PersonaController {
     @PostMapping(path = "/login", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Response> login(@RequestBody RequestLogin login) {
         return ResponseEntity.ok(personaService.Login(login.getEmail(), login.getPassword()));
+    }
+    
+    @ApiOperation(value = "Iniciar Sesion", tags = {"Controlador Servicio Persona"})
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "OK", response = Response.class),
+        @ApiResponse(code = 404, message = "Not Found"),
+        @ApiResponse(code = 500, message = "Error en el Servidor", response = ExceptionResponse.class)
+    })
+    @PostMapping(path = "/logout", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Response> logout() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        PersonaPrincipal persona = (PersonaPrincipal) auth.getPrincipal();
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(new Response<>(null, "OK", HttpStatus.OK));
     }
 
     @ApiOperation(value = "Actualizar Personas", tags = {"Controlador Servicio Persona"})
