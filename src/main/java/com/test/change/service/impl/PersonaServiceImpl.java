@@ -56,6 +56,7 @@ public class PersonaServiceImpl implements PersonaService {
             Set<Rol> roles = new HashSet<>();
             persona.setNombre(request.getNombre());
             persona.setEmail(request.getEmail());
+            persona.setFechaNacimiento(request.getFechaNacimiento());
             persona.setPassword(passwordEncoder.encode(request.getPassword()));
             if(rolrepository.findByRolNombre(request.getRol().getRolNombre()).isPresent()){
                 rol = rolrepository.findByRolNombre(request.getRol().getRolNombre()).get();
@@ -120,9 +121,15 @@ public class PersonaServiceImpl implements PersonaService {
             var persona = personaRepository.findById(id).get();
             Set<Rol> roles = persona.getRoles();
             persona.setNombre(request.getNombre());
+            persona.setFechaNacimiento(request.getFechaNacimiento());
             persona.setEmail(request.getEmail());
             Rol rol = new Rol();
-            rol.setRolNombre(request.getRol().getRolNombre());
+            if(rolrepository.findByRolNombre(request.getRol().getRolNombre()).isPresent()){
+                rol = rolrepository.findByRolNombre(request.getRol().getRolNombre()).get();
+            }else{
+                rol.setRolNombre(request.getRol().getRolNombre());
+                rol = rolrepository.save(rol);
+            }
             roles.add(rol);
             persona.setRoles(roles);
             var result = personaRepository.save(persona);

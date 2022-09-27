@@ -58,10 +58,7 @@ public class SecutiryChange extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/v2/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger-resources/**",
-                        "/configuration/**","/api/personas/crear","/api/personas/login").permitAll()
+                .antMatchers("/v2/api-docs/**","/swagger-ui/**","/swagger-resources/**","/configuration/**","/api/personas/crea","/api/personas/login","/api/personas/roles").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)
