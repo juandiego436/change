@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PersonaRepository extends CrudRepository<Persona,Long> {
+    
+    @Query("SELECT p FROM Persona p WHERE p.roles.correo=:email")
     Optional<Persona> findByEmail(String email);
     
     @Query("SELECT p FROM Persona p WHERE p.deletedAt IS NULL")

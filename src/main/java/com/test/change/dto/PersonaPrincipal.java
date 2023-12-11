@@ -1,9 +1,9 @@
 package com.test.change.dto;
 
 import com.test.change.entity.Persona;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,9 +24,8 @@ public class PersonaPrincipal implements UserDetails {
 
     public static PersonaPrincipal build(Persona persona){
         List<GrantedAuthority> authorities =
-                persona.getRoles().stream().map(rol -> new SimpleGrantedAuthority(rol
-                .getRolNombre())).collect(Collectors.toList());
-        return new PersonaPrincipal(persona.getNombre(), persona.getEmail(), persona.getPassword(), authorities);
+                Arrays.asList(new SimpleGrantedAuthority(persona.getRoles().getRolNombre()));
+        return new PersonaPrincipal(persona.getNombre(), persona.getRoles().getNickname(), persona.getRoles().getPassword(), authorities);
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

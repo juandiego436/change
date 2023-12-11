@@ -1,14 +1,14 @@
 package com.test.change.entity;
 
-import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,7 +25,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Persona implements Serializable {
+public class Producto {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,17 +35,15 @@ public class Persona implements Serializable {
     @Column(name = "nombre", length = 100)
     private String nombre;
     
-    @Column(name = "apellido", length = 100)
-    private String apellido;
+    @Column(name = "precio")
+    private Double precio;
     
-    @Column(name = "edad")
-    private Integer edad;
+    @Column(name = "stock")
+    private Integer stock;
     
-    @Column(name = "dni", length = 8)
-    private String dni;
-    
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private Rol roles;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)
+    private Persona usuario;
     
     @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
@@ -56,7 +54,4 @@ public class Persona implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Date updatedAt;
-    
-    @Column(name = "deleted_at", nullable = true, columnDefinition = "TIMESTAMP")
-    private Date deletedAt;
 }

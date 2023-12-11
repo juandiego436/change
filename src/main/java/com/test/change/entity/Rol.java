@@ -1,11 +1,15 @@
 package com.test.change.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,6 +35,19 @@ public class Rol {
 
     @Column(name = "rol_name", length = 100)
     private String rolNombre;
+    
+    @Column(name = "nickname", length = 100)
+    private String nickname;
+    
+    @Column(name = "correo", length = 150)
+    private String correo;
+    
+    @Column(name = "password", length = 100)
+    private String password;
+    
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JsonIgnore
+    private Persona usuario;
 
     @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
