@@ -26,22 +26,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @CrossOrigin
 @Api(value = "productos", produces = "application/json", tags = {"Controlador Servicio Productos"})
 public class ProductoController {
-    
+
     @Autowired
     ProductoService productoService;
-    
+
     @ApiOperation(value = "Lista Personas", tags = {"Controlador Servicio Persona"})
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Response.class),
         @ApiResponse(code = 404, message = "Not Found"),
         @ApiResponse(code = 500, message = "Error en el Servidor", response = ExceptionResponse.class)
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping(path = "/", produces = "application/json")
     public ResponseEntity<Response> lista() {
         return ResponseEntity.ok(productoService.lista());
     }
-    
+
     @ApiOperation(value = "Obtener Persona", tags = {"Controlador Servicio Persona"})
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Response.class),
@@ -60,7 +60,7 @@ public class ProductoController {
         @ApiResponse(code = 404, message = "Not Found"),
         @ApiResponse(code = 500, message = "Error en el Servidor", response = ExceptionResponse.class)
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @PostMapping(path = "/crea", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Response> crea(@RequestBody ProductoRequest request) {
         return ResponseEntity.ok(productoService.crear(request));

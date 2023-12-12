@@ -20,7 +20,7 @@ public class RequestLogin {
     @Email(message = "correo invalido")
     private String email;
     
-    @ApiModelProperty(position = 2, required = true, name = "password", dataType = "String", example = "Lgoptimusb3#")
+    @ApiModelProperty(position = 2, required = true, name = "password", dataType = "String", example = "LgoptimusG3#")
     @NotEmpty(message = "Ingrese su password")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&.,#])([A-Za-z\\d$@$!%*?&.,#&]|[^ ]){8,15}$")
     private String password;

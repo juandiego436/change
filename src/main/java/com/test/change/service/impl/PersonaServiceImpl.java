@@ -68,6 +68,7 @@ public class PersonaServiceImpl implements PersonaService {
             rol.setRolNombre(request.getRolNombre());
             rol.setNickname(request.getNickname());
             rol.setPassword(passwordEncoder.encode(request.getPassword()));
+            rol.setUsuario(persona);
             persona.setRoles(rol);
             var result = personaRepository.save(persona);
             return new Response(null, "OK", HttpStatus.CREATED);

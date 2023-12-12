@@ -97,7 +97,7 @@ public class PersonaController {
         return ResponseEntity.ok(personaService.Login(login));
     }
     
-    @ApiOperation(value = "Iniciar Sesion", tags = {"Controlador Servicio Persona"})
+    @ApiOperation(value = "Cerrar Sesion", tags = {"Controlador Servicio Persona"})
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Response.class),
         @ApiResponse(code = 404, message = "Not Found"),
@@ -124,7 +124,7 @@ public class PersonaController {
         return ResponseEntity.ok(personaService.Actualizar(id, request));
     }
 
-    @ApiOperation(value = "Iniciar Sesion", tags = {"Controlador Servicio Persona"})
+    @ApiOperation(value = "Eliminar Persona", tags = {"Controlador Servicio Persona"})
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Response.class),
         @ApiResponse(code = 404, message = "Not Found"),
